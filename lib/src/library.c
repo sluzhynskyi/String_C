@@ -51,8 +51,7 @@ int my_str_from_cstr(my_str_t *str, const char *cstr, size_t buf_size) {
 }
 
 
-// MODIFY
-
+// MODIFICATION OF THE STRING
 int my_str_pushback(my_str_t *str, char c)
 //! Додає символ в кінець.
 //! Повертає 0, якщо успішно,
@@ -131,7 +130,7 @@ int my_str_insert(my_str_t *str, const my_str_t *from, size_t pos)
     if ((str == NULL) || (from == NULL)) return -1;
     if (my_str_reserve(str, str->capacity_m + from->size_m) == -1)
         return -2;
-    if (pos >= str->size_m) return -3;
+    if (pos > str->size_m) return -3;
     memmove(str->data + pos + from->size_m, str->data + pos, str->size_m - pos);
     memcpy(str->data + pos, from->data, from->size_m);
     str->size_m += from->size_m;
@@ -143,15 +142,21 @@ int my_str_insert_cstr(my_str_t *str, const char *from, size_t pos)
 //! За потреби -- збільшує буфер.
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 {
-    return 0;
+    my_str_t tempStr;
+    my_str_create(&tempStr, 0);
+    my_str_from_cstr(&tempStr, from, 0);
+    int ans = my_str_insert(str, &tempStr, pos);
+    my_str_free(&tempStr);
+    return ans;
 }
+
 
 int my_str_append(my_str_t *str, const my_str_t *from)
 //! Додати стрічку в кінець.
 //! За потреби -- збільшує буфер.
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 {
-    return 0;
+    return my_str_insert(str, from, str->size_m);
 }
 
 int my_str_append_cstr(my_str_t *str, const char *from)
@@ -159,7 +164,7 @@ int my_str_append_cstr(my_str_t *str, const char *from)
 //! За потреби -- збільшує буфер.
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 {
-    return 0;
+    return my_str_insert_cstr(str, from, str->size_m);
 }
 
 int my_str_substr(const my_str_t *from, my_str_t *to, size_t beg, size_t end)
@@ -182,17 +187,21 @@ int my_str_substr_cstr(const my_str_t *from, char *to, size_t beg, size_t end)
 
 // INPUT OUTPUT
 
-size_t my_str_size(const my_str_t* str){
+size_t my_str_size(const my_str_t *str) {
     //! Повертає розмір стрічки
-    if (str == NULL){
-        return 0;}
-    return str->size_m;}
+    if (str == NULL) {
+        return 0;
+    }
+    return str->size_m;
+}
 
-size_t my_str_capacity(const my_str_t* str){
+size_t my_str_capacity(const my_str_t *str) {
     //! Повертає розмір буфера
-    if (str == NULL){
-        return 0;}
-    return str->capacity_m;}
+    if (str == NULL) {
+        return 0;
+    }
+    return str->capacity_m;
+}
 
 
 int my_str_empty(const my_str_t *str) {
@@ -200,23 +209,24 @@ int my_str_empty(const my_str_t *str) {
     if (str->size_m == 0) {
         return 1;
     }
-    return 0;}
+    return 0;
+}
 
 
-int my_str_getc(const my_str_t* str, size_t index){
+int my_str_getc(const my_str_t *str, size_t index) {
     //! Повертає символ у вказаній позиції, або -1
-    if (index > str->size_m - 1){
+    if (index > str->size_m - 1) {
         return -1;
     }
     return str->data[index];
 
 }
 
-int my_str_putc(my_str_t* str, size_t index, char c){
+int my_str_putc(my_str_t *str, size_t index, char c) {
     //! Записує символ у вказану позиції (заміняючи той, що там був),
     //! Повертає 0, якщо позиція в межах стрічки,
     //! Поветає -1, не змінюючи її вмісту, якщо ні.
-    if (index > str->size_m - 1){
+    if (index > str->size_m - 1) {
         return -1;
     }
     str->data[index] = c;
@@ -224,7 +234,7 @@ int my_str_putc(my_str_t* str, size_t index, char c){
 }
 
 
-const char* my_str_get_cstr(my_str_t* str){
+const char *my_str_get_cstr(my_str_t *str) {
     //! Повернути вказівник на С-стрічку, еквівалентну str.
     str->data[str->size_m] = '\0';
     return str->data;
