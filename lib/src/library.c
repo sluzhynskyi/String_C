@@ -2,6 +2,57 @@
 #include <string.h>
 #include <stdio.h>
 
+// INITIALIZING
+
+int my_str_create(my_str_t *str, size_t buf_size) {
+    str->capacity_m = buf_size;
+    str->size_m = 0;
+    str->data = (char *) malloc((buf_size + 1) * sizeof(char));
+    if (str->data == NULL) {
+        free(&(str->capacity_m));
+        free(&(str->size_m));
+        return -1;
+    }
+    return 0;
+}
+
+void my_str_free(my_str_t *str) {
+    free(str->data);
+    str->capacity_m = 0;
+    str->size_m = 0;
+}
+
+int my_str_from_cstr(my_str_t *str, const char *cstr, size_t buf_size) {
+    if (!str) return -2;
+    if (!cstr) return -2;
+    str->capacity_m = buf_size;
+    str->size_m = buf_size;
+    str->data = (char *) malloc((buf_size + 1));
+    if (str->data == NULL) {
+        str->capacity_m = buf_size;
+        str->size_m = 0;
+        return -2;
+    }
+    size_t i;
+    for (i = 0; i <= buf_size; i++) {
+        if (*(cstr + i) == '\0') {
+            str->size_m = i;
+            break;
+        }
+        *(str->data + i) = *(cstr + i);   //ul * size_t
+    }
+    if (i == buf_size && *(cstr + (buf_size + 1)) != '\0') {
+        str->capacity_m = buf_size;
+        str->size_m = 0;
+        free(str->data);
+        return -1;
+    }
+    return 0;
+}
+
+
+// MODIFY
+
 int my_str_pushback(my_str_t *str, char c)
 //! Додає символ в кінець.
 //! Повертає 0, якщо успішно,
@@ -63,12 +114,11 @@ int my_str_insert_c(my_str_t *str, char c, size_t pos)
 //! За потреби -- збільшує буфер.
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 {
-    if (str == NULL) return -1;
     if (my_str_reserve(str, str->capacity_m + 1) == -1)
-        return -2;
-    if (pos > str->size_m) return -3;
+        return -1;
+    if (pos >= str->size_m) return -2;
     memmove(str->data + pos + 1, str->data + pos, str->size_m - pos);
-    str->size_m ++;
+    str->size_m++;
     str->data[pos] = c;
     return 0;
 }
@@ -81,7 +131,7 @@ int my_str_insert(my_str_t *str, const my_str_t *from, size_t pos)
     if ((str == NULL) || (from == NULL)) return -1;
     if (my_str_reserve(str, str->capacity_m + from->size_m) == -1)
         return -2;
-    if (pos > str->size_m) return -3;
+    if (pos >= str->size_m) return -3;
     memmove(str->data + pos + from->size_m, str->data + pos, str->size_m - pos);
     memcpy(str->data + pos, from->data, from->size_m);
     str->size_m += from->size_m;
