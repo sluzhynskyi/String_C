@@ -25,8 +25,8 @@ int my_str_popback(my_str_t *str)
 {
     if (str == NULL) return -1;
     if (str->size_m == 0) return -2;
-    char temp = str->data[str->size_m -1];
-    str->size_m --;
+    char temp = str->data[str->size_m - 1];
+    str->size_m--;
     return temp;
 
 }
@@ -55,7 +55,7 @@ void my_str_clear(my_str_t *str)
 //! стрічка продовжує існувати, буфер той самий, того ж розміру, що був,
 //! лише містить 0 символів -- єдине, що вона робить, це size_m = 0.
 {
-
+    str->size_m = 0;
 }
 
 int my_str_insert_c(my_str_t *str, char c, size_t pos)
@@ -63,6 +63,13 @@ int my_str_insert_c(my_str_t *str, char c, size_t pos)
 //! За потреби -- збільшує буфер.
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 {
+    if (str == NULL) return -1;
+    if (my_str_reserve(str, str->capacity_m + 1) == -1)
+        return -2;
+    if (pos > str->size_m) return -3;
+    memmove(str->data + pos + 1, str->data + pos, str->size_m - pos);
+    str->size_m ++;
+    str->data[pos] = c;
     return 0;
 }
 
