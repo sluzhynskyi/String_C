@@ -174,13 +174,25 @@ int my_str_substr(const my_str_t *from, my_str_t *to, size_t beg, size_t end)
 //! За потреби -- збільшує буфер.
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 {
+    if (from == NULL) return -1;
+    if (beg > from->size_m)
+        return -2;
+    memmove(to->data, from->data + beg, end - beg);
+    my_str_reserve(to, end - beg);
+    to->size_m = end -beg;
     return 0;
+
 }
 
 int my_str_substr_cstr(const my_str_t *from, char *to, size_t beg, size_t end)
 //! C-string варіант my_str_substr().
 //! Вважати, що в цільовій С-стрічці достатньо місц.
 {
+    if (from == NULL) return -1;
+    if (beg > from->size_m)
+        return -2;
+    memmove(to, from->data + beg, end - beg);
+    to[end - beg] = '\0';
     return 0;
 }
 
