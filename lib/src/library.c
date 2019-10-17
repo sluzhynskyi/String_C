@@ -78,6 +78,13 @@ int my_str_insert(my_str_t *str, const my_str_t *from, size_t pos)
 //! За потреби -- збільшує буфер.
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 {
+    if ((str == NULL) || (from == NULL)) return -1;
+    if (my_str_reserve(str, str->capacity_m + from->size_m) == -1)
+        return -2;
+    if (pos > str->size_m) return -3;
+    memmove(str->data + pos + from->size_m, str->data + pos, str->size_m - pos);
+    memcpy(str->data + pos, from->data, from->size_m);
+    str->size_m += from->size_m;
     return 0;
 }
 
