@@ -1,16 +1,16 @@
 #ifndef STRINGLAB_LIBRARY_H
 #define STRINGLAB_LIBRARY_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct
-{
+typedef struct {
     size_t capacity_m; // Розмір блока
-    size_t size_m;	   // Фактичний розмір стрічки
-    char*  data;	   // Вказівник на блок пам'яті
+    size_t size_m;       // Фактичний розмір стрічки
+    char *data;       // Вказівник на блок пам'яті
 } my_str_t;
 
-int my_str_create(my_str_t *str, size_t buf_size);
+int my_str_create(my_str_t * str, size_t buf_size);
 
 void my_str_free(my_str_t *str);
 
@@ -75,4 +75,5 @@ int my_str_write_file(const my_str_t *str, FILE *file);
 int my_str_write(const my_str_t *str, FILE *file);
 
 int my_str_read_file_delim(my_str_t *str, FILE *file, char delimiter);
+
 #endif //STRINGLAB_LIBRARY_H
