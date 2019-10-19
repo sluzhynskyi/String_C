@@ -72,7 +72,6 @@ int my_str_substr_cstr(const my_str_t *from, char *to, size_t beg, size_t end);
 //! Маніпуляції розміром стрічки
 //!===========================================================================
 
-
 int my_str_reserve(my_str_t *str, size_t buf_size);
 
 int my_str_shrink_to_fit(my_str_t *str);

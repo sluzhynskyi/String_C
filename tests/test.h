@@ -3,17 +3,23 @@
 
 int tests();
 
+//!===========================================================================
+//! Створення та знищення стрічки.
+//!===========================================================================
+
+int test_my_str_create();
+
+int test_my_str_free();
+
+int test_my_str_from_cstr();
+
 //!============================================================================
 //! Інформація про стрічку
 //!============================================================================
 
 int test_my_str_size();
 
-int test_my_str_from_cstr();
-
 int test_my_str_capacity();
-
-int test_my_str_create();
 
 int test_my_str_empty();
 
@@ -37,6 +43,8 @@ int test_my_str_popback();
 
 int test_my_str_copy();
 
+int test_my_str_clear();
+
 int test_my_str_insert_c();
 
 int test_my_str_insert();
@@ -54,7 +62,6 @@ int test_my_str_substr_cstr();
 //!===========================================================================
 //! Маніпуляції розміром стрічки
 //!===========================================================================
-
 
 int test_my_str_reserve();
 
@@ -82,7 +89,11 @@ int test_my_str_find_if();
 
 int test_my_str_read_file();
 
+int test_my_str_read();
+
 int test_my_str_write_file();
+
+int test_my_str_write();
 
 int test_my_str_read_file_delim();
 
