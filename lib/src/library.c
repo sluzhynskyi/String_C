@@ -28,6 +28,13 @@ void my_str_free(my_str_t *str) {
 int my_str_from_cstr(my_str_t *str, const char *cstr, size_t buf_size) {
     if (!str) return -2;
     if (!cstr) return -2;
+    if (buf_size == 0){
+        size_t i = 0;
+        while (cstr[i] != '\0') {
+            i++;
+        }
+        buf_size = i + 1;
+    }
     str->capacity_m = buf_size;
     str->size_m = buf_size;
     str->data = (char *) malloc((buf_size + 1));
@@ -355,6 +362,7 @@ int my_str_cmp_cstr(const my_str_t *str1, const char *cstr2) {
     while (cstr2[str2_size] != '\0') {
         str2_size++;
     }
+//    printf("size of c string is: %zu and size of my_str is %zu\n", str2_size, str1->size_m);
 
     if (str1->size_m > str2_size)
         return 1;
