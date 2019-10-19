@@ -409,29 +409,16 @@ size_t my_str_find_if(const my_str_t *str, int (*predicat)(int)) {
 //! Ввід-вивід
 //!===========================================================================
 
-int my_str_read_file(my_str_t *str, FILE *file) {
-    //! Читає стрічку із файлу. Читає цілий файл.
-    if (file == NULL) {
-        return -1;
-    }
-    while (!feof(file)) {
-        if (fgets(str->data, 2, file)) {
-            if (str->size_m == str->capacity_m)
-                my_str_reserve(str, str->capacity_m * 2);
-            ++str->size_m;
-            continue;
-        } else {
-            return -1;
-        }
-    }
-    fclose(file);
-    return 0;
+int my_str_read_file(my_str_t* str, FILE* file) {
+    //!Читає стрічку із файлу. Читає цілий файл.
+    return my_str_read_file_delim(str, file, EOF);
 }
 
-int my_str_read(my_str_t *str) {
+
+int my_str_read(my_str_t* str){
     //! Аналог my_str_read_file, із stdin.
     if (stdin == NULL) return -1;
-    while (fgets(str->data, 2, stdin)) {
+    while(fgets(str->data, 2, stdin)) {
         if (str->size_m == str->capacity_m)
             my_str_reserve(str, str->capacity_m * 2);
         ++str->size_m;
@@ -439,7 +426,8 @@ int my_str_read(my_str_t *str) {
     return 0;
 }
 
-int my_str_write_file(const my_str_t *str, FILE *file) {
+
+int my_str_write_file(const my_str_t* str, FILE* file){
     //! Записує стрічку в файл:
     //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
     if (file == NULL) return -1;
@@ -448,7 +436,6 @@ int my_str_write_file(const my_str_t *str, FILE *file) {
     return 0;
 
 }
-
 int my_str_write(const my_str_t *str) {
     if (str->size_m == 0)
         return -1;
@@ -458,18 +445,19 @@ int my_str_write(const my_str_t *str) {
     return 0;
 }
 
-int my_str_read_file_delim(my_str_t *str, FILE *file, char delimiter) {
+
+int my_str_read_file_delim(my_str_t* str, FILE* file, char delimiter){
     //! На відміну від my_str_read_file(), яка читає до кінця файлу,
     //! читає по вказаний delimiter, за потреби
     //! збільшує стрічку.
     //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
     if (file == NULL) return -1;
     int curr_buf;
-    while ((curr_buf = fgetc(file)) != delimiter && (curr_buf = fgetc(file)) != EOF) {
-        if (my_str_pushback(str, (char) curr_buf) != 0) {
+    while ((curr_buf = fgetc(file)) != EOF ){
+        if (curr_buf == delimiter) break;
+        if(my_str_pushback(str, (char) curr_buf) != 0){
             return -1;
         }
     }
     return 0;
 }
-
