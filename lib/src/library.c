@@ -3,6 +3,10 @@
 #include <stdio.h>
 
 // INITIALIZING
+//!===========================================================================
+//! Створення та знищення стрічки.
+//!===========================================================================
+
 
 int my_str_create(my_str_t *str, size_t buf_size) {
     str->capacity_m = buf_size;
@@ -15,6 +19,7 @@ int my_str_create(my_str_t *str, size_t buf_size) {
     }
     return 0;
 }
+
 
 void my_str_free(my_str_t *str) {
     free(str->data);
@@ -50,8 +55,71 @@ int my_str_from_cstr(my_str_t *str, const char *cstr, size_t buf_size) {
     return 0;
 }
 
+//!============================================================================
+//! Інформація про стрічку
+//!============================================================================
+size_t my_str_size(const my_str_t *str) {
+    //! Повертає розмір стрічки
+    if (str == NULL) {
+        return 0;
+    }
+    return str->size_m;
+}
 
-// MODIFICATION OF THE STRING
+size_t my_str_capacity(const my_str_t *str) {
+    //! Повертає розмір буфера
+    if (str == NULL) {
+        return 0;
+    }
+    return str->capacity_m;
+}
+
+
+int my_str_empty(const my_str_t *str) {
+    //! Повертає булеве значення, чи стрічка порожн
+    if (str->size_m == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+//!===========================================================================
+//! Доступ до символів стрічки
+//!===========================================================================
+
+
+int my_str_getc(const my_str_t *str, size_t index) {
+    //! Повертає символ у вказаній позиції, або -1
+    if (index > str->size_m - 1) {
+        return -1;
+    }
+    return str->data[index];
+
+}
+
+int my_str_putc(my_str_t *str, size_t index, char c) {
+    //! Записує символ у вказану позиції (заміняючи той, що там був),
+    //! Повертає 0, якщо позиція в межах стрічки,
+    //! Поветає -1, не змінюючи її вмісту, якщо ні.
+    if (index > str->size_m - 1) {
+        return -1;
+    }
+    str->data[index] = c;
+    return 0;
+}
+
+
+const char *my_str_get_cstr(my_str_t *str) {
+    //! Повернути вказівник на С-стрічку, еквівалентну str.
+    str->data[str->size_m] = '\0';
+    return str->data;
+}
+
+//!===========================================================================
+//! Модифікації стрічки, що змінюють її розмір і можуть викликати реалокацію.
+//!===========================================================================
+
+
 int my_str_pushback(my_str_t *str, char c)
 //! Додає символ в кінець.
 //! Повертає 0, якщо успішно,
@@ -196,58 +264,123 @@ int my_str_substr_cstr(const my_str_t *from, char *to, size_t beg, size_t end)
     return 0;
 }
 
+//!===========================================================================
+//! Маніпуляції розміром стрічки
+//!===========================================================================
 
-// INPUT OUTPUT
+// TODO BODYA
 
-size_t my_str_size(const my_str_t *str) {
-    //! Повертає розмір стрічки
-    if (str == NULL) {
-        return 0;
+//!===========================================================================
+//! Функції пошуку та порівняння
+//!===========================================================================
+
+size_t my_str_find(const my_str_t* str, const my_str_t* tofind, size_t from){
+    //! Знаходить першу підстрічку в стрічці, повертає номер її
+    //! початку або (size_t)(-1), якщо не знайдено.
+    if (str->size_m <  tofind->size_m || str->size_m -1 < from) {
+        return (size_t)(-1);
     }
-    return str->size_m;
+    int search_index = 0;
+    for (size_t i = from; i < str->size_m; i++ ){
+        if (str->data[i] == tofind->data[search_index]){
+            search_index++;
+        }
+
+        else if (str->data[i] != tofind->data[search_index]){
+            search_index = 0;
+        }
+
+        if (tofind->size_m <= search_index){
+            return i - search_index +1;
+        }
+
+    }
+    return (size_t)(-1);
 }
 
-size_t my_str_capacity(const my_str_t *str) {
-    //! Повертає розмір буфера
-    if (str == NULL) {
-        return 0;
-    }
-    return str->capacity_m;
-}
 
+//! Поведінка має бути такою ж, як в strcmp.
+int my_str_cmp(const my_str_t* str1, const my_str_t* str2) {
+    //! Порівнює стрічки, повертає 0, якщо рівні (за вмістом!)
+    //! -1 (або інше від'ємне значення), якщо перша менша,
+    //! 1 (або інше додатне значення) -- якщо друга.
 
-int my_str_empty(const my_str_t *str) {
-    //! Повертає булеве значення, чи стрічка порожн
-    if (str->size_m == 0) {
+    if (str1->size_m > str2->size_m) {
         return 1;
+    } else if (str1->size_m < str2->size_m) {
+        return -1;
+    }
+    for (size_t i = 0; i < str1->size_m; ++i) {
+        if (my_str_getc(str1, i) < my_str_getc(str2, i)) {
+            return -1;
+        } else if (my_str_getc(str1, i) > my_str_getc(str2, i)) {
+            return 1;
+        }
+
     }
     return 0;
 }
 
 
-int my_str_getc(const my_str_t *str, size_t index) {
-    //! Повертає символ у вказаній позиції, або -1
-    if (index > str->size_m - 1) {
-        return -1;
-    }
-    return str->data[index];
+int my_str_cmp_cstr(const my_str_t* str1, const char* cstr2){
+    //! Порівнює стрічку із С-стрічкою,
+    //! повертає 0, якщо рівні (за вмістом!)
+    //! -1 , якщо перша менша,
+    //! 1  -- якщо друга.
 
-}
-
-int my_str_putc(my_str_t *str, size_t index, char c) {
-    //! Записує символ у вказану позиції (заміняючи той, що там був),
-    //! Повертає 0, якщо позиція в межах стрічки,
-    //! Поветає -1, не змінюючи її вмісту, якщо ні.
-    if (index > str->size_m - 1) {
-        return -1;
+    size_t str2_size = 0;
+    while (cstr2[str2_size] != '\0') {
+        str2_size++;
     }
-    str->data[index] = c;
+
+    if (str1->size_m > str2_size)
+        return 1;
+    else if (str1->size_m < str2_size)
+        return -1;
+    else {
+        for (int i = 0; i < str1->size_m; ++i) {
+            if (str1->data[i] > cstr2[i])
+                return 1;
+            else if (str1->data[i] < cstr2[i])
+                return -1;
+        }
+
+    }
     return 0;
 }
 
 
-const char *my_str_get_cstr(my_str_t *str) {
-    //! Повернути вказівник на С-стрічку, еквівалентну str.
-    str->data[str->size_m] = '\0';
-    return str->data;
+size_t my_str_find_c(const my_str_t* str, char tofind, size_t from){
+    //! Знаходить перший символ в стрічці, повернути його номер
+    //! або (size_t)(-1), якщо не знайдено.
+    if (str->size_m < from ) {
+        return (size_t)(-1);
+    }
+    for (size_t i = from; i < str->size_m; i++) {
+        if (str->data[i] == tofind) {
+            return i;
+        }
+    }
+    return (size_t)(-1);
 }
+
+
+
+
+size_t my_str_find_if(const my_str_t* str, int (*predicat)(int)){
+    //! Знаходить символ в стрічці, для якого передана функція повернула true,
+    //! повернутає його номер або (size_t)(-1), якщо не знайдено
+    for (size_t i = 0; i < str->size_m; i++) {
+        if (predicat((int) str->data[i]))
+            return i;
+    }
+    return (size_t) (-1);
+
+}
+
+//!===========================================================================
+//! Ввід-вивід
+//!===========================================================================
+
+// TODO JULYA
+
