@@ -129,8 +129,8 @@ int tests() {
     modification_block();
     information_block();
     access_block();
-    search_block();
-    input_block();
+//    search_block();
+//    input_block();
     return 0;
 }
 

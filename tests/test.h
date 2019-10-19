@@ -106,4 +106,4 @@ my_str_t file1_example();
 
 int predicant_f(int g);
 
-#endif STRING_C_TEST_H
+#endif

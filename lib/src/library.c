@@ -205,7 +205,6 @@ int my_str_insert_cstr(my_str_t *str, const char *from, size_t pos){
 //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
 
     my_str_t tempStr;
-    my_str_create(&tempStr, 0);
     my_str_from_cstr(&tempStr, from, 0);
     int ans = my_str_insert(str, &tempStr, pos);
     my_str_free(&tempStr);
