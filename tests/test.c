@@ -1,24 +1,59 @@
 #include "test.h"
 #include "../lib/src/library.h"
-
-
+#include<stdio.h>
+#include<string.h>
 
 int tests() {
-    int temp = 0;
-    temp += test_my_str_pushback();
-    printf("test 1 output : %d\n", test_my_str_pushback());
-    temp += test_my_str_popback();
-    printf("test 2 output: %d\n", test_my_str_popback());
-    temp += test_my_str_copy();
-    printf("test 3 output: %d\n", test_my_str_copy());
-    temp += test_my_str_clear();
-    printf("test 4 output: %d\n", test_my_str_clear());
-    temp += test_my_str_insert_c();
-    printf("test 5 output: %d\n", test_my_str_insert_c());
-    temp += test_my_str_insert();
-    printf("test 6 output: %d\n", test_my_str_insert());
-    temp += test_my_str_insert_cstr();
-    printf("test 7 output: %d\n", test_my_str_insert_cstr());
+    int temp;
+
+    temp = test_my_str_pushback();
+    if (temp != 0)
+        printf("test test_my_str_pushback() Failed : %d\n", temp);
+
+
+    temp = test_my_str_popback();
+    if (temp != 0)
+        printf("test test_my_str_popback() Failed : %d\n", temp);
+
+
+    temp = test_my_str_copy();
+    if (temp != 0)
+        printf("test test_my_str_copy() Failed : %d\n", temp);
+
+
+    temp = test_my_str_clear();
+    if (temp != 0)
+        printf("test test_my_str_clear() Failed : %d\n", temp);
+
+
+    temp = test_my_str_insert_c();
+    if (temp != 0)
+        printf("test test_my_str_insert_c() Failed : %d\n", temp);
+
+    temp = test_my_str_insert();
+    if (temp != 0)
+        printf("test test_my_str_insert() Failed : %d\n", temp);
+
+
+    temp = test_my_str_insert_cstr();
+    if (temp != 0)
+        printf("test test_my_str_insert_cstr() Failed : %d\n", temp);
+
+    temp = test_my_str_append();
+    if (temp != 0)
+        printf("test test_my_str_append() Failed : %d\n", temp);
+
+    temp = test_my_str_append_cstr();
+    if (temp != 0)
+        printf("test test_my_str_append_cstr() Failed : %d\n", temp);
+
+    temp = test_my_str_substr();
+    if (temp != 0)
+        printf("test test_my_str_substr() Failed : %d\n", temp);
+
+    temp = test_my_str_substr_cstr();
+    if (temp != 0)
+        printf("test test_my_str_substr_cstr() Failed : %d\n", temp);
 
     return temp;
 }
@@ -37,15 +72,14 @@ int test_my_str_pushback() {
     my_str_create(&str2, 1);
 
     my_str_from_cstr(&str1, "lore", 0);
-    my_str_from_cstr(&str2, "hello word", 0);
+    my_str_from_cstr(&str2, "hello world", 0);
 
     my_str_pushback(&str1, c1);
     my_str_pushback(&str2, c2);
 
 
-    printf("str is: %c, %c\n",str1.data[0], str1.data[1]);
     if (my_str_cmp_cstr(&str1, "lorem") != 0 ||
-        my_str_cmp_cstr(&str2, "hello word!"))
+        my_str_cmp_cstr(&str2, "hello world!"))
         return -1;
     my_str_free(&str1);
     my_str_free(&str2);
@@ -60,7 +94,7 @@ int test_my_str_popback() {
     my_str_create(&str2, 1);
 
     my_str_from_cstr(&str1, "lorem", 0);
-    my_str_from_cstr(&str2, "hello word", 0);
+    my_str_from_cstr(&str2, "hello world", 0);
 
     if (my_str_popback(&str1) != 'm' ||
         my_str_popback(&str2) != 'd')
@@ -107,7 +141,7 @@ int test_my_str_insert_c() {
     my_str_create(&str1, 1);
     my_str_from_cstr(&str1, "WW", 0);
 
-    my_str_insert_c(&str1, 'O',1);
+    my_str_insert_c(&str1, 'O', 1);
 
     if (my_str_cmp_cstr(&str1, "WOW") != 0)
         return -1;
@@ -123,10 +157,10 @@ int test_my_str_insert() {
     my_str_create(&str2, 1);
 
     my_str_from_cstr(&str1, "lorem", 0);
-    my_str_from_cstr(&str2, " hello word ", 0);
+    my_str_from_cstr(&str2, " hello world ", 0);
     my_str_insert(&str1, &str2, 2);
 
-    if (my_str_cmp_cstr(&str1, "lo hello word rem") != 0)
+    if (my_str_cmp_cstr(&str1, "lo hello world rem") != 0)
         return -1;
     return 0;
 }
@@ -145,17 +179,57 @@ int test_my_str_insert_cstr() {
 }
 
 int test_my_str_append() {
+    my_str_t str1;
+    my_str_t str2;
+
+    my_str_create(&str1, 1);
+    my_str_create(&str2, 1);
+
+    my_str_from_cstr(&str1, "Hello world", 0);
+    my_str_from_cstr(&str2, "!!!!!!", 0);
+    my_str_append(&str1, &str2);
+
+    if (my_str_cmp_cstr(&str1, "Hello world!!!!!!") != 0)
+        return -1;
     return 0;
 }
 
 int test_my_str_append_cstr() {
+    my_str_t str1;
+
+    my_str_create(&str1, 1);
+    my_str_from_cstr(&str1, "Hello World", 0);
+
+    my_str_append_cstr(&str1, "!!!!!!!");
+
+    if (my_str_cmp_cstr(&str1, "Hello World!!!!!!!") != 0)
+        return -1;
     return 0;
 }
 
 int test_my_str_substr() {
+    my_str_t str1;
+    my_str_t str2;
+
+    my_str_create(&str1, 1);
+    my_str_create(&str2, 1);
+
+    my_str_from_cstr(&str1, "Hello World!!!!!", 0);
+    my_str_substr(&str1, &str2, 6, 11);
+    if (my_str_cmp_cstr(&str2, "World") != 0)
+        return -1;
     return 0;
 }
 
 int test_my_str_substr_cstr() {
+    my_str_t str1;
+    char c[10];
+
+    my_str_create(&str1, 1);
+
+    my_str_from_cstr(&str1, "Hello World!!!!!", 0);
+    my_str_substr_cstr(&str1, c, 6, 11);
+    if (strcmp(c, "World") != 0)
+        return -1;
     return 0;
 }

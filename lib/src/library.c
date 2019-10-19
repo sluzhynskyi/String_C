@@ -245,8 +245,8 @@ int my_str_substr(const my_str_t *from, my_str_t *to, size_t beg, size_t end){
     if (from == NULL) return -1;
     if (beg > from->size_m)
         return -2;
-    memmove(to->data, from->data + beg, end - beg);
     my_str_reserve(to, end - beg);
+    memmove(to->data, from->data + beg, end - beg);
     to->size_m = end - beg;
     return 0;
 
@@ -273,10 +273,11 @@ int my_str_reserve(my_str_t *str, size_t buf_size) {
     if (buf_size <= str->capacity_m) return 0;
     char *temp = (char *) malloc((buf_size + 1)); // sizeof(char) = 1
     if (temp == NULL) return -1;
-    for (size_t i = 0; i < str->size_m; i++) *(temp + i) = *(str->data + i);
+    for (size_t i = 0; i < str->size_m; i++)
+        *(temp + i) = *(str->data + i);
     free(str->data);
-    str->data = temp;
     str->capacity_m = buf_size;
+    str->data = temp;
     return 0;
 }
 
