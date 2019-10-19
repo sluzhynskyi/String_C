@@ -1,6 +1,8 @@
 #include "library.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
 
 //!===========================================================================
 //! Створення та знищення стрічки.
@@ -9,7 +11,7 @@
 int my_str_create(my_str_t *str, size_t buf_size) {
     str->capacity_m = buf_size;
     str->size_m = 0;
-    str->data = (char *) malloc((buf_size + 1) * sizeof(char));
+    str->data = (char*)malloc((buf_size + 1) * sizeof(char));
     if (str->data == NULL) {
         free(&(str->capacity_m));
         free(&(str->size_m));
@@ -28,37 +30,28 @@ void my_str_free(my_str_t *str) {
 int my_str_from_cstr(my_str_t *str, const char *cstr, size_t buf_size) {
     if (!str) return -2;
     if (!cstr) return -2;
-    if (buf_size == 0){
-        size_t i = 0;
-        while (cstr[i] != '\0') {
-            i++;
-        }
-        buf_size = i + 1;
+    ///determine the length of the c string given
+    size_t real_l = 0;
+    while (*(cstr + real_l) != '\0') {
+        real_l++;
     }
-    str->capacity_m = buf_size;
-    str->size_m = buf_size;
-    str->data = (char *) malloc((buf_size + 1));
+    if (buf_size == 0) buf_size = real_l;
+    if (buf_size < real_l) return -1;
+
+    str->data = (char*)malloc((buf_size + 1));
     if (str->data == NULL) {
-        str->capacity_m = buf_size;
-        str->size_m = 0;
         return -2;
     }
+    str->capacity_m = buf_size;
+    str->size_m = real_l;
+
     size_t i;
-    for (i = 0; i <= buf_size; i++) {
-        if (*(cstr + i) == '\0') {
-            str->size_m = i;
-            break;
-        }
-        *(str->data + i) = *(cstr + i);   //ul * size_t
-    }
-    if (i == buf_size && *(cstr + (buf_size + 1)) != '\0') {
-        str->capacity_m = buf_size;
-        str->size_m = 0;
-        free(str->data);
-        return -1;
+    for (i = 0; i < real_l; i++) {
+        *(str->data + i) = *(cstr + i);
     }
     return 0;
 }
+
 
 //!============================================================================
 //! Інформація про стрічку
@@ -271,13 +264,12 @@ int my_str_substr_cstr(const my_str_t *from, char *to, size_t beg, size_t end){
 int my_str_reserve(my_str_t *str, size_t buf_size) {
     if (!str) return -1;
     if (buf_size <= str->capacity_m) return 0;
-    char *temp = (char *) malloc((buf_size + 1)); // sizeof(char) = 1
+    char *temp = (char*)malloc((buf_size + 1)); // sizeof(char) = 1
     if (temp == NULL) return -1;
-    for (size_t i = 0; i < str->size_m; i++)
-        *(temp + i) = *(str->data + i);
+    for (size_t i = 0; i < str->size_m; i++) *(temp + i) = *(str->data + i);
     free(str->data);
-    str->capacity_m = buf_size;
     str->data = temp;
+    str->capacity_m = buf_size;
     return 0;
 }
 
@@ -293,9 +285,6 @@ int my_str_resize(my_str_t *str, size_t new_size, char sym) {
     if (new_size > str->capacity_m) {
         int echo = my_str_reserve(str, new_size);
         if (echo < 0) return -1;
-        for (size_t i = str->size_m; i < str->capacity_m; i++) {
-            *(str->data + i) = sym;
-        }
     }
     if (new_size > str->size_m) {
         for (size_t i = str->size_m; i < new_size; i++) {
@@ -415,7 +404,6 @@ int my_str_read_file(my_str_t* str, FILE* file) {
     return my_str_read_file_delim(str, file, EOF);
 }
 
-
 int my_str_read(my_str_t* str){
     //! Аналог my_str_read_file, із stdin.
     if (stdin == NULL) return -1;
@@ -427,7 +415,6 @@ int my_str_read(my_str_t* str){
     return 0;
 }
 
-
 int my_str_write_file(const my_str_t* str, FILE* file){
     //! Записує стрічку в файл:
     //! У випадку помилки повертає різні від'ємні числа, якщо все ОК -- 0.
@@ -437,6 +424,7 @@ int my_str_write_file(const my_str_t* str, FILE* file){
     return 0;
 
 }
+
 int my_str_write(const my_str_t *str) {
     if (str->size_m == 0)
         return -1;
@@ -445,7 +433,6 @@ int my_str_write(const my_str_t *str) {
     }
     return 0;
 }
-
 
 int my_str_read_file_delim(my_str_t* str, FILE* file, char delimiter){
     //! На відміну від my_str_read_file(), яка читає до кінця файлу,

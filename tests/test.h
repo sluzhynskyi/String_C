@@ -1,6 +1,7 @@
 #ifndef STRING_C_TEST_H
 #define STRING_C_TEST_H
 
+#include "../lib/src/library.h"
 int tests();
 
 //!===========================================================================
@@ -96,5 +97,13 @@ int test_my_str_write_file();
 int test_my_str_write();
 
 int test_my_str_read_file_delim();
+
+//!===========================================================================
+//! Додаткові Функції для вводу і виводу
+//!===========================================================================
+
+my_str_t file1_example();
+
+int predicant_f(int g);
 
 #endif STRING_C_TEST_H

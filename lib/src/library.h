@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <stddef.h>
+
 typedef struct {
     size_t capacity_m; // Розмір блока
     size_t size_m;       // Фактичний розмір стрічки
