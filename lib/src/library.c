@@ -20,6 +20,7 @@ int my_str_create(my_str_t *str, size_t buf_size) {
 
 void my_str_free(my_str_t *str) {
     free(str->data);
+    str->data = NULL;
     str->capacity_m = 0;
     str->size_m = 0;
 }

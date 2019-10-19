@@ -24,7 +24,6 @@ int my_str_from_cstr(my_str_t *str, const char *cstr, size_t buf_size);
 //! Інформація про стрічку
 //!============================================================================
 
-
 size_t my_str_size(const my_str_t *str);
 
 size_t my_str_capacity(const my_str_t *str);
@@ -34,7 +33,6 @@ int my_str_empty(const my_str_t *str);
 //!===========================================================================
 //! Доступ до символів стрічки
 //!===========================================================================
-
 
 int my_str_getc(const my_str_t *str, size_t index);
 

@@ -3,4 +3,6 @@ project(String_C C)
 
 set(CMAKE_C_STANDARD 99)
 
+add_executable(test tests/test.c tests/test.h)
+
 add_library(String_C SHARED lib/src/library.c lib/src/library.h)
