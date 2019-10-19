@@ -267,8 +267,42 @@ int my_str_substr_cstr(const my_str_t *from, char *to, size_t beg, size_t end)
 //!===========================================================================
 //! Маніпуляції розміром стрічки
 //!===========================================================================
+int my_str_reserve(my_str_t *str, size_t buf_size) {
+    if (!str) return -1;
+    if (buf_size <= str->capacity_m) return 0;
+    char *temp = (char*)malloc((buf_size + 1)); // sizeof(char) = 1
+    if (temp == NULL) return -1;
+    for (size_t i = 0; i < str->size_m; i++) *(temp + i) = *(str->data + i);
+    free(str->data);
+    str->data = temp;
+    str->capacity_m = buf_size;
+    return 0;
+}
 
-// TODO BODYA
+int my_str_shrink_to_fit(my_str_t *str) {
+    if (!str) return -1;
+    str->capacity_m = str->size_m;
+    return 0;
+}
+
+int my_str_resize(my_str_t *str, size_t new_size, char sym) {
+    if (!str) return -1;
+
+    if (new_size > str->capacity_m) {
+        int echo = my_str_reserve(str, new_size);
+        if (echo < 0) return -1;
+        for (size_t i = str->size_m; i < str->capacity_m; i++) {
+            *(str->data + i) = sym;
+        }
+    }
+    if (new_size > str->size_m) {
+        for (size_t i = str->size_m; i < new_size; i++) {
+            *(str->data + i) = sym;
+        }
+    }
+    str->size_m = new_size;
+    return 0;
+}
 
 //!===========================================================================
 //! Функції пошуку та порівняння
