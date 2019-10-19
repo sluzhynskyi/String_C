@@ -3,6 +3,12 @@
 #include<stdio.h>
 #include<string.h>
 
+int main() {
+    int res = tests();
+    return 0;
+
+}
+
 int tests() {
     int temp;
 
@@ -159,10 +165,12 @@ int test_my_str_insert() {
     my_str_from_cstr(&str1, "lorem", 0);
     my_str_from_cstr(&str2, " hello world ", 0);
     my_str_insert(&str1, &str2, 2);
-
+    int res = 0;
     if (my_str_cmp_cstr(&str1, "lo hello world rem") != 0)
-        return -1;
-    return 0;
+        res = -1;
+    my_str_free(&str1);
+    my_str_free(&str2);
+    return res;
 }
 
 int test_my_str_insert_cstr() {
@@ -172,10 +180,11 @@ int test_my_str_insert_cstr() {
     my_str_from_cstr(&str1, "WW", 0);
 
     my_str_insert_cstr(&str1, " oooooo ", 1);
-
+    int res = 0;
     if (my_str_cmp_cstr(&str1, "W oooooo W") != 0)
-        return -1;
-    return 0;
+        res = -1;
+    my_str_free(&str1);
+    return res;
 }
 
 int test_my_str_append() {
@@ -189,9 +198,12 @@ int test_my_str_append() {
     my_str_from_cstr(&str2, "!!!!!!", 0);
     my_str_append(&str1, &str2);
 
+    int res = 0;
     if (my_str_cmp_cstr(&str1, "Hello world!!!!!!") != 0)
-        return -1;
-    return 0;
+        res = -1;
+    my_str_free(&str1);
+    my_str_free(&str2);
+    return res;
 }
 
 int test_my_str_append_cstr() {
@@ -202,9 +214,11 @@ int test_my_str_append_cstr() {
 
     my_str_append_cstr(&str1, "!!!!!!!");
 
+    int res = 0;
     if (my_str_cmp_cstr(&str1, "Hello World!!!!!!!") != 0)
-        return -1;
-    return 0;
+        res = -1;
+    my_str_free(&str1);
+    return res;
 }
 
 int test_my_str_substr() {
@@ -216,9 +230,13 @@ int test_my_str_substr() {
 
     my_str_from_cstr(&str1, "Hello World!!!!!", 0);
     my_str_substr(&str1, &str2, 6, 11);
+
+    int res = 0;
     if (my_str_cmp_cstr(&str2, "World") != 0)
-        return -1;
-    return 0;
+        res = -1;
+    my_str_free(&str1);
+    my_str_free(&str2);
+    return res;
 }
 
 int test_my_str_substr_cstr() {
@@ -229,7 +247,9 @@ int test_my_str_substr_cstr() {
 
     my_str_from_cstr(&str1, "Hello World!!!!!", 0);
     my_str_substr_cstr(&str1, c, 6, 11);
+    int res = 0;
     if (strcmp(c, "World") != 0)
-        return -1;
-    return 0;
+        res = -1;
+    my_str_free(&str1);
+    return res;
 }
